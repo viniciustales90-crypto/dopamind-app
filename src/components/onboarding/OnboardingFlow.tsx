@@ -1,89 +1,219 @@
-'use client';
+/* ======================== STEP 1 ======================== */
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+function Step1Name({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Como você gostaria de ser chamado?
+      </h1>
 
-interface OnboardingFlowProps {
-  onComplete: () => void;
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Digite seu nome"
+        className="mt-4 w-full h-11 px-4 rounded-2xl border border-[#E5E7EB]"
+      />
+    </div>
+  );
 }
 
-export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const [step, setStep] = useState(1);
+/* ======================== STEP 2 ======================== */
 
-  const screens = [
-    {
-      title: 'Sua mente está sobrecarregada de estímulos.',
-      description: 'O DopaMind ajuda você a recuperar clareza e controle.',
-    },
-    {
-      title: 'Pequenos passos mudam tudo.',
-      description: '5 minutos por dia podem reprogramar sua dopamina.',
-    },
-    {
-      title: 'Comece sua mudança hoje.',
-      description: '',
-    },
+function Step2BirthDate({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Qual sua data de nascimento?
+      </h1>
+
+      <input
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-4 w-full h-11 px-4 rounded-2xl border border-[#E5E7EB]"
+      />
+    </div>
+  );
+}
+
+/* ======================== STEP 3 ======================== */
+
+function Step3FocusDifficulty({
+  value,
+  onChange,
+}: {
+  value: FocusDifficulty | null;
+  onChange: (v: FocusDifficulty) => void;
+}) {
+  const options: FocusDifficulty[] = ['Sim', 'Às vezes', 'Quase sempre'];
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Você sente dificuldade de focar?
+      </h1>
+
+      <div className="grid gap-3 mt-4">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            className={`w-full h-11 rounded-2xl border ${
+              value === opt
+                ? 'bg-[#111827] text-white'
+                : 'bg-white border-[#E5E7EB]'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ======================== STEP 4 ======================== */
+
+function Step4ImpulseCycles({
+  value,
+  onChange,
+}: {
+  value: ImpulseCycle[];
+  onChange: (v: ImpulseCycle[]) => void;
+}) {
+  const options: ImpulseCycle[] = [
+    'Redes sociais',
+    'Celular o tempo todo',
+    'Procrastinação',
+    'Vídeos curtos',
+    'Jogos / Pornografia',
   ];
 
-  const currentScreen = screens[step - 1];
-
-  const handleNext = () => {
-    if (step < 3) {
-      setStep(step + 1);
+  const toggle = (opt: ImpulseCycle) => {
+    if (value.includes(opt)) {
+      onChange(value.filter((item) => item !== opt));
     } else {
-      onComplete();
+      onChange([...value, opt]);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAFAFA] dark:bg-[#0D0D0F] px-6 animate-in fade-in duration-500">
-      <div className="max-w-md w-full space-y-8 text-center">
-        {/* Logo */}
-        <div className="mb-12 animate-in slide-in-from-top duration-700">
-          <h1 className="text-4xl font-semibold text-[#1D4ED8] dark:text-[#3B82F6] mb-2">DopaMind</h1>
-          <div className="flex justify-center gap-2 mt-8">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === step ? 'w-8 bg-[#1D4ED8] dark:bg-[#3B82F6]' : 'w-1.5 bg-[#E5E7EB] dark:bg-[#1F2937]'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Quais impulsos mais te prendem?
+      </h1>
 
-        {/* Content */}
-        <div className="space-y-6 animate-in slide-in-from-bottom duration-700 delay-100">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-[#0B0B0C] dark:text-[#FFFFFF] leading-tight">
-            {currentScreen.title}
-          </h2>
-          {currentScreen.description && (
-            <p className="text-lg text-[#0B0B0C]/60 dark:text-[#FFFFFF]/60">
-              {currentScreen.description}
-            </p>
-          )}
-        </div>
-
-        {/* Button */}
-        <div className="pt-8 animate-in slide-in-from-bottom duration-700 delay-200">
-          <Button
-            onClick={handleNext}
-            className="w-full bg-[#1D4ED8] hover:bg-[#1D4ED8]/90 dark:bg-[#3B82F6] dark:hover:bg-[#3B82F6]/90 text-white h-[52px] text-base font-semibold rounded-xl shadow-sm transition-all duration-300 hover:scale-105 active:scale-[0.97]"
-          >
-            {step === 3 ? 'Entrar no DopaMind' : 'Continuar'}
-          </Button>
-        </div>
-
-        {/* Skip option */}
-        {step < 3 && (
+      <div className="grid gap-3 mt-4">
+        {options.map((opt) => (
           <button
-            onClick={onComplete}
-            className="text-sm text-[#0B0B0C]/50 dark:text-[#FFFFFF]/50 hover:text-[#0B0B0C]/70 dark:hover:text-[#FFFFFF]/70 transition-colors animate-in fade-in duration-700 delay-300"
+            key={opt}
+            onClick={() => toggle(opt)}
+            className={`w-full h-11 rounded-2xl border text-left px-4 ${
+              value.includes(opt)
+                ? 'bg-[#111827] text-white'
+                : 'bg-white border-[#E5E7EB]'
+            }`}
           >
-            Pular introdução
+            {opt}
           </button>
-        )}
+        ))}
+      </div>
+
+      <p className="text-xs text-[#6B7280]">Você pode escolher várias opções.</p>
+    </div>
+  );
+}
+
+/* ======================== STEP 5 ======================== */
+
+function Step5OffPhoneTime({
+  value,
+  onChange,
+}: {
+  value: OffPhoneTime | null;
+  onChange: (v: OffPhoneTime) => void;
+}) {
+  const options: OffPhoneTime[] = [
+    '0–5 min',
+    '5–15 min',
+    '15–30 min',
+    '+30 min',
+  ];
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Quanto tempo por dia você fica longe do celular?
+      </h1>
+
+      <div className="grid gap-3 mt-4">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            className={`w-full h-11 rounded-2xl border ${
+              value === opt
+                ? 'bg-[#111827] text-white'
+                : 'bg-white border-[#E5E7EB]'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ======================== STEP 6 ======================== */
+
+function Step6MainGoal({
+  value,
+  onChange,
+}: {
+  value: MainGoal | null;
+  onChange: (v: MainGoal) => void;
+}) {
+  const options: MainGoal[] = [
+    'Focar mais',
+    'Reduzir impulsos',
+    'Melhorar disciplina',
+    'Recomeçar',
+  ];
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+        Qual seu objetivo principal?
+      </h1>
+
+      <div className="grid gap-3 mt-4">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            className={`w-full h-11 rounded-2xl border ${
+              value === opt
+                ? 'bg-[#111827] text-white'
+                : 'bg-white border-[#E5E7EB]'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
       </div>
     </div>
   );

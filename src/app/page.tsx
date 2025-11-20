@@ -1,54 +1,45 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { storage } from '@/lib/storage';
-import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
-import QuizFlow from '@/components/quiz/QuizFlow';
-import MainApp from '@/components/MainApp';
+import MainApp from './components/MainApp';
+import OnboardingFlow, { OnboardingAnswers } from /pages/onboarding/OnboardingFlow';
 
-export default function Home() {
-  const [currentView, setCurrentView] = useState<'loading' | 'onboarding' | 'quiz' | 'app'>('loading');
+
+
+
+
+
+export default function RootPage() {
+  const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check onboarding status
-    const isOnboardingComplete = storage.isOnboardingComplete();
-    const quizAnswers = storage.getQuizAnswers();
+    if (typeof window === 'undefined') return;
 
-    if (!isOnboardingComplete) {
-      setCurrentView('onboarding');
-    } else if (!quizAnswers) {
-      setCurrentView('quiz');
-    } else {
-      setCurrentView('app');
-    }
+    const completed = window.localStorage.getItem('dopamind_onboarding_completed') === '1';
+    setHasOnboarded(completed);
   }, []);
 
-  const handleOnboardingComplete = () => {
-    storage.setOnboardingComplete();
-    setCurrentView('quiz');
+  const handleOnboardingComplete = (answers: OnboardingAnswers) => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('dopamind_onboarding_completed', '1');
+      window.localStorage.setItem('dopamind_userName', answers.name);
+      window.localStorage.setItem('dopamind_birthDate', answers.birthDate);
+    }
+
+    setHasOnboarded(true);
   };
 
-  const handleQuizComplete = () => {
-    setCurrentView('app');
-  };
-
-  if (currentView === 'loading') {
+  if (hasOnboarded === null) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FFFFFF] dark:bg-[#0C0C0D]">
-        <div className="text-3xl font-semibold text-[#1D4ED8] dark:text-[#3B82F6] animate-pulse">
-          DopaMind
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-white text-[#0B7280]">
+        Carregando...
       </div>
     );
   }
 
-  if (currentView === 'onboarding') {
-    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  if (hasOnboarded) {
+    return <MainApp />;
   }
 
-  if (currentView === 'quiz') {
-    return <QuizFlow onComplete={handleQuizComplete} />;
-  }
-
-  return <MainApp />;
+  return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 }
