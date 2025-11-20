@@ -244,83 +244,131 @@ function QuizFlow({ onComplete }) {
     const [step, setStep] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(1);
     const [answers, setAnswers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
     const [finished, setFinished] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    // ===============================
+    //          NOVO QUIZ
+    // ===============================
     const questions = [
+        // 1 — Nome
         {
-            question: 'Qual é sua maior distração hoje?',
+            question: 'Como você gostaria de ser chamado?',
+            type: 'text',
+            key: 'userName'
+        },
+        // 2 — Idade
+        {
+            question: 'Qual é sua idade?',
             options: [
                 {
-                    value: 'celular',
-                    label: 'Celular'
+                    value: 'menos-18',
+                    label: 'Menos de 18'
                 },
                 {
-                    value: 'redes-sociais',
-                    label: 'Redes sociais'
+                    value: '18-24',
+                    label: '18 a 24'
                 },
                 {
-                    value: 'videos-curtos',
-                    label: 'Vídeos curtos'
+                    value: '25-34',
+                    label: '25 a 34'
+                },
+                {
+                    value: '35-44',
+                    label: '35 a 44'
+                },
+                {
+                    value: '45+',
+                    label: '45+'
+                }
+            ],
+            key: 'age'
+        },
+        // 3 — Dor mental principal
+        {
+            question: 'O que mais está te atrapalhando hoje?',
+            options: [
+                {
+                    value: 'falta-foco',
+                    label: 'Falta de foco'
+                },
+                {
+                    value: 'ansiedade',
+                    label: 'Ansiedade'
                 },
                 {
                     value: 'procrastinacao',
                     label: 'Procrastinação'
                 },
                 {
-                    value: 'impulsos-fortes',
-                    label: 'Impulsos fortes'
+                    value: 'muito-celular',
+                    label: 'Muito tempo no celular'
                 },
                 {
-                    value: 'ansiedade',
-                    label: 'Ansiedade'
+                    value: 'estimulos-demais',
+                    label: 'Estímulos demais'
+                },
+                {
+                    value: 'falta-disciplina',
+                    label: 'Falta de disciplina'
                 }
             ],
-            key: 'distraction'
+            key: 'mainPain'
         },
+        // 4 — Nível de foco
         {
-            question: 'Quanto tempo você consegue focar agora?',
+            question: 'Por quanto tempo você consegue focar sem distrações?',
             options: [
                 {
-                    value: 5,
-                    label: '5 minutos'
+                    value: 'menos-5',
+                    label: 'Menos de 5 min'
                 },
                 {
-                    value: 10,
-                    label: '10 minutos'
+                    value: '5-10',
+                    label: '5 a 10 min'
                 },
                 {
-                    value: 15,
-                    label: '15 minutos'
+                    value: '10-20',
+                    label: '10 a 20 min'
+                },
+                {
+                    value: 'mais-20',
+                    label: 'Mais de 20 min'
                 }
             ],
-            key: 'focusTime'
+            key: 'focusLevel'
         },
+        // 5 — Impulso dominante
         {
-            question: 'Qual é seu objetivo principal?',
+            question: 'Qual desses impulsos você sente com mais frequência?',
             options: [
                 {
-                    value: 'estudar',
-                    label: 'Estudar'
+                    value: 'abrir-celular',
+                    label: 'Abrir o celular sem motivo'
                 },
                 {
-                    value: 'trabalhar',
-                    label: 'Trabalhar'
+                    value: 'redes-repeticao',
+                    label: 'Checar redes sociais repetidamente'
                 },
                 {
-                    value: 'controlar-impulsos',
-                    label: 'Controlar impulsos'
+                    value: 'dopamina-rapida',
+                    label: 'Vídeos curtos (dopamina rápida)'
                 },
                 {
-                    value: 'reduzir-estimulos',
-                    label: 'Reduzir estímulos'
+                    value: 'pular-tarefas',
+                    label: 'Pular tarefas importantes'
                 },
                 {
-                    value: 'melhorar-disciplina',
-                    label: 'Melhorar disciplina'
+                    value: 'inquietacao',
+                    label: 'Inquietação'
+                },
+                {
+                    value: 'compulsao',
+                    label: 'Comportamentos impulsivos'
                 }
             ],
-            key: 'goal'
+            key: 'impulseType'
         },
+        // 6 — Sintoma dominante
         {
-            question: 'Como você se sente ultimamente?',
+            question: 'Como você tem se sentido nos últimos dias?',
             options: [
                 {
                     value: 'sem-foco',
@@ -331,115 +379,181 @@ function QuizFlow({ onComplete }) {
                     label: 'Ansioso'
                 },
                 {
-                    value: 'preso-recompensas',
-                    label: 'Preso a recompensas rápidas'
+                    value: 'cansado-mente',
+                    label: 'Cansado mentalmente'
                 },
                 {
-                    value: 'cansado',
-                    label: 'Cansado'
+                    value: 'estressado',
+                    label: 'Estressado'
                 },
                 {
                     value: 'desmotivado',
                     label: 'Desmotivado'
+                },
+                {
+                    value: 'sobrecarregado',
+                    label: 'Sobrecarregado'
                 }
             ],
             key: 'feeling'
+        },
+        // 7 — Objetivo
+        {
+            question: 'Qual é seu objetivo agora?',
+            options: [
+                {
+                    value: 'melhorar-foco',
+                    label: 'Melhorar o foco'
+                },
+                {
+                    value: 'reduzir-impulsos',
+                    label: 'Reduzir impulsos'
+                },
+                {
+                    value: 'aumentar-disciplina',
+                    label: 'Aumentar disciplina'
+                },
+                {
+                    value: 'organizar-mente',
+                    label: 'Organizar a mente'
+                },
+                {
+                    value: 'render-estudo',
+                    label: 'Render mais no estudo'
+                },
+                {
+                    value: 'render-trabalho',
+                    label: 'Render mais no trabalho'
+                }
+            ],
+            key: 'goal'
         }
     ];
+    const totalSteps = questions.length;
     const currentQuestion = questions[step - 1];
+    // HANDLE respostas
     const handleAnswer = (value)=>{
         const newAnswers = {
             ...answers,
             [currentQuestion.key]: value
         };
         setAnswers(newAnswers);
-        if (step < questions.length) {
+        if (step < totalSteps) {
             setStep(step + 1);
         } else {
             __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$storage$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["storage"].setQuizAnswers(newAnswers);
             setFinished(true);
         }
     };
-    // ============================
-    //       TELA FINAL
-    // ============================
+    // ========================================
+    //           TELA FINAL (CHECKOUT)
+    // ========================================
     if (finished) {
+        const name = answers.userName || 'Você';
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex flex-col items-center justify-center min-h-screen bg-white px-6 text-center",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                     className: "text-3xl font-semibold text-[#0B0B0C] mb-4",
-                    children: "Analisamos seu perfil."
-                }, void 0, false, {
+                    children: [
+                        name,
+                        ", analisamos seu perfil."
+                    ]
+                }, void 0, true, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 83,
+                    lineNumber: 134,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     className: "text-[#6B7280] max-w-md mb-8",
-                    children: "Seu cérebro mostra sinais de sobrecarga dopaminérgica. Criamos um plano personalizado para te ajudar a recuperar foco, disciplina e controle dos impulsos."
+                    children: "Você apresentou sinais de desequilíbrio dopaminérgico que explicam sua dificuldade em focar, manter disciplina e controlar impulsos. Criamos um plano personalizado para sua mente."
                 }, void 0, false, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 87,
+                    lineNumber: 138,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "w-full max-w-md space-y-3",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm",
-                            children: "Seu foco atual está abaixo do ideal."
-                        }, void 0, false, {
+                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl text-sm shadow-sm",
+                            children: [
+                                "Seu foco está sendo afetado por: ",
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                    children: answers.mainPain
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/quiz/QuizFlow.tsx",
+                                    lineNumber: 145,
+                                    columnNumber: 46
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 93,
+                            lineNumber: 144,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm",
-                            children: "Você possui sinais de dependência de estímulos rápidos."
-                        }, void 0, false, {
+                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl text-sm shadow-sm",
+                            children: [
+                                "Você apresenta sinais de: ",
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                    children: answers.impulseType
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/quiz/QuizFlow.tsx",
+                                    lineNumber: 149,
+                                    columnNumber: 39
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 97,
+                            lineNumber: 148,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm",
-                            children: "Seu melhor caminho é o Protocolo DopaMind Pro."
-                        }, void 0, false, {
+                            className: "p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl text-sm shadow-sm",
+                            children: [
+                                "Seu melhor caminho agora é o ",
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                    children: "DopaMind Pro"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/quiz/QuizFlow.tsx",
+                                    lineNumber: 153,
+                                    columnNumber: 42
+                                }, this),
+                                "."
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 101,
+                            lineNumber: 152,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 92,
+                    lineNumber: 143,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                    onClick: ()=>{
-                        // abrir link externo
-                        window.location.href = "https://seu-link-de-checkout.com";
-                    },
+                    onClick: ()=>window.location.href = "https://seu-checkout.com",
                     className: "w-full max-w-md h-12 mt-8 rounded-full bg-[#111827] text-white text-base font-semibold",
                     children: "Ativar DopaMind Pro agora"
                 }, void 0, false, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 106,
+                    lineNumber: 157,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-            lineNumber: 82,
+            lineNumber: 133,
             columnNumber: 7
         }, this);
     }
-    // ============================
-    //  TELA DO QUIZ (PERGUNTAS)
-    // ============================
+    // ========================================
+    //              TELA DAS PERGUNTAS
+    // ========================================
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "flex flex-col items-center justify-center min-h-screen bg-[#FFFFFF] dark:bg-[#0C0C0D] px-6",
+        className: "flex flex-col items-center justify-center min-h-screen bg-white px-6",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "max-w-md w-full space-y-8",
             children: [
@@ -447,101 +561,112 @@ function QuizFlow({ onComplete }) {
                     className: "space-y-3",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex justify-between text-sm text-[#0B0B0C]/60 dark:text-[#FFFFFF]/60",
+                            className: "flex justify-between text-sm text-[#0B0B0C]/60",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: [
                                         "Pergunta ",
                                         step,
-                                        " de 4"
+                                        " de ",
+                                        totalSteps
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                                    lineNumber: 129,
+                                    lineNumber: 177,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: [
-                                        Math.round(step / 4 * 100),
+                                        Math.round(step / totalSteps * 100),
                                         "%"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                                    lineNumber: 130,
+                                    lineNumber: 178,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 128,
+                            lineNumber: 176,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "h-2 bg-[#E5E7EB] dark:bg-[#1F2937] rounded-full overflow-hidden",
+                            className: "h-2 bg-[#E5E7EB] rounded-full overflow-hidden",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "h-full bg-[#1D4ED8] dark:bg-[#3B82F6] transition-all duration-300",
+                                className: "h-full bg-[#1D4ED8] transition-all duration-300",
                                 style: {
-                                    width: `${step / 4 * 100}%`
+                                    width: `${step / totalSteps * 100}%`
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                                lineNumber: 133,
+                                lineNumber: 181,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 132,
+                            lineNumber: 180,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 127,
+                    lineNumber: 175,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "space-y-6 pt-8",
+                    className: "space-y-6 pt-4",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                            className: "text-2xl sm:text-3xl font-semibold text-[#0B0B0C] dark:text-[#FFFFFF] leading-tight",
+                            className: "text-2xl font-semibold text-[#0B0B0C] leading-tight",
                             children: currentQuestion.question
                         }, void 0, false, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 142,
+                            lineNumber: 190,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        currentQuestion.type === 'text' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                            type: "text",
+                            placeholder: "Digite aqui…",
+                            onBlur: (e)=>handleAnswer(e.target.value),
+                            className: "w-full h-12 px-4 rounded-xl border border-[#E5E7EB] text-base"
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/quiz/QuizFlow.tsx",
+                            lineNumber: 196,
+                            columnNumber: 13
+                        }, this),
+                        currentQuestion.options && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-3 pt-4",
                             children: currentQuestion.options.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                     onClick: ()=>handleAnswer(option.value),
+                                    className: "w-full h-14 text-left justify-start rounded-xl border-2 border-[#E5E7EB] text-base hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] transition-all",
                                     variant: "outline",
-                                    className: "w-full h-14 text-left justify-start text-base hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] dark:hover:bg-[#3B82F6] dark:hover:border-[#3B82F6] transition-all duration-200 rounded-xl border-2 border-[#E5E7EB] dark:border-[#1F2937] text-[#0B0B0C] dark:text-[#FFFFFF]",
                                     children: option.label
                                 }, option.value.toString(), false, {
                                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                                    lineNumber: 149,
-                                    columnNumber: 15
+                                    lineNumber: 208,
+                                    columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                            lineNumber: 147,
-                            columnNumber: 11
+                            lineNumber: 206,
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-                    lineNumber: 141,
+                    lineNumber: 189,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-            lineNumber: 124,
+            lineNumber: 172,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/quiz/QuizFlow.tsx",
-        lineNumber: 123,
+        lineNumber: 171,
         columnNumber: 5
     }, this);
 }
