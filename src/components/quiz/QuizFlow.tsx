@@ -12,6 +12,7 @@ interface QuizFlowProps {
 export default function QuizFlow({ onComplete }: QuizFlowProps) {
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<Partial<QuizAnswers>>({});
+  const [finished, setFinished] = useState(false);
 
   const questions = [
     {
@@ -65,18 +66,63 @@ export default function QuizFlow({ onComplete }: QuizFlowProps) {
     const newAnswers = { ...answers, [currentQuestion.key]: value };
     setAnswers(newAnswers);
 
-    if (step < 4) {
+    if (step < questions.length) {
       setStep(step + 1);
     } else {
-      // Save answers and complete
       storage.setQuizAnswers(newAnswers as QuizAnswers);
-      onComplete();
+      setFinished(true);
     }
   };
 
+  // ============================
+  //       TELA FINAL
+  // ============================
+  if (finished) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6 text-center">
+        <h1 className="text-3xl font-semibold text-[#0B0B0C] mb-4">
+          Analisamos seu perfil.
+        </h1>
+
+        <p className="text-[#6B7280] max-w-md mb-8">
+          Seu cérebro mostra sinais de sobrecarga dopaminérgica. Criamos um plano personalizado
+          para te ajudar a recuperar foco, disciplina e controle dos impulsos.
+        </p>
+
+        <div className="w-full max-w-md space-y-3">
+          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm">
+            Seu foco atual está abaixo do ideal.
+          </div>
+
+          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm">
+            Você possui sinais de dependência de estímulos rápidos.
+          </div>
+
+          <div className="p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl shadow-sm text-sm">
+            Seu melhor caminho é o Protocolo DopaMind Pro.
+          </div>
+        </div>
+
+        <Button
+          onClick={() => {
+            // abrir link externo
+            window.location.href = "https://seu-link-de-checkout.com";
+          }}
+          className="w-full max-w-md h-12 mt-8 rounded-full bg-[#111827] text-white text-base font-semibold"
+        >
+          Ativar DopaMind Pro agora
+        </Button>
+      </div>
+    );
+  }
+
+  // ============================
+  //  TELA DO QUIZ (PERGUNTAS)
+  // ============================
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#FFFFFF] dark:bg-[#0C0C0D] px-6">
       <div className="max-w-md w-full space-y-8">
+
         {/* Progress */}
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-[#0B0B0C]/60 dark:text-[#FFFFFF]/60">
