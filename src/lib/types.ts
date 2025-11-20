@@ -34,3 +34,15 @@ export interface FocusSession {
   startTime: Date;
   completed: boolean;
 }
+export interface QuizAnswers {
+  userName: string;
+  age: number;
+
+  distraction: string;
+  focusTime: number;
+  goal: string;
+  feeling: string;
+
+  mainPain: string;
+  impulseType: string;
+}

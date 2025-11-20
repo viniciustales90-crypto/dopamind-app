@@ -902,10 +902,6 @@
     margin-bottom: calc(var(--spacing) * 1);
   }
 
-  .mb-2 {
-    margin-bottom: calc(var(--spacing) * 2);
-  }
-
   .mb-3 {
     margin-bottom: calc(var(--spacing) * 3);
   }
@@ -920,10 +916,6 @@
 
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
-  }
-
-  .mb-12 {
-    margin-bottom: calc(var(--spacing) * 12);
   }
 
   .-ml-4 {
@@ -1210,10 +1202,6 @@
 
   .w-1 {
     width: calc(var(--spacing) * 1);
-  }
-
-  .w-1\.5 {
-    width: calc(var(--spacing) * 1.5);
   }
 
   .w-2 {
