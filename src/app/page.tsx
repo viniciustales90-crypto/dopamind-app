@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import MainApp from './components/MainApp';
-import OnboardingFlow, { OnboardingAnswers } from /pages/onboarding/OnboardingFlow';
+import MainApp from '@/components/MainApp';
+import OnboardingFlow, { OnboardingAnswers } from '@/components/onboarding/OnboardingFlow';
+
+
 
 
 
