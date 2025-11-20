@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import HomePage from '@/app/pages/HomePage';
-import ImpulseControlPage from '@/app/pages/ImpulseControlPage';
-import LibraryPage from '@/app/pages/LibraryPage';
-import StatsPage from '@/app/pages/StatsPage';
-import ProfilePage from '@/app/pages/ProfilePage';
+
+import HomePage from '@/src/pages/HomePage';
+import ImpulseControlPage from '@/src/pages/ImpulseControlPage';
+import LibraryPage from '@/src/pages/LibraryPage';
+import StatsPage from '@/src/pages/StatsPage';
+import ProfilePage from '@/src/pages/ProfilePage';
 
 export default function MainApp() {
   const [activeTab, setActiveTab] = useState<'home' | 'impulses' | 'library' | 'stats' | 'profile'>('home');
