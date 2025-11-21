@@ -72,17 +72,35 @@ function Button({ className, variant, size, asChild = false, ...props }) {
 "[project]/src/lib/storage.ts [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
+// src/lib/storage.ts
 __turbopack_context__.s({
     "calculateDailyProgress": ()=>calculateDailyProgress,
     "checkAndResetDailyHabits": ()=>checkAndResetDailyHabits,
     "storage": ()=>storage
 });
+// chaves no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
 const LAST_RESET_KEY = 'dopamind-last-reset-date';
-// helpers base
+const DEFAULT_DAILY_HABITS = [
+    {
+        id: 'habit-1',
+        title: 'Ficar 10 minutos sem redes sociais',
+        completed: false
+    },
+    {
+        id: 'habit-2',
+        title: 'Bloquear notificações durante o foco',
+        completed: false
+    },
+    {
+        id: 'habit-3',
+        title: 'Começar o dia 15 min longe do celular',
+        completed: false
+    }
+];
 function baseGet(key) {
     if ("TURBOPACK compile-time truthy", 1) return null;
     //TURBOPACK unreachable
@@ -99,29 +117,42 @@ function baseRemove(key) {
     ;
 }
 const storage = {
+    // genéricos (usados no quiz / result)
     get: baseGet,
     set: baseSet,
     remove: baseRemove,
+    // perfil
     getUserProfile () {
         return baseGet(USER_PROFILE_KEY);
     },
     setUserProfile (profile) {
         baseSet(USER_PROFILE_KEY, profile);
     },
+    // quiz dopamind
     getQuizAnswers () {
         return baseGet(QUIZ_ANSWERS_KEY);
     },
     setQuizAnswers (answers) {
         baseSet(QUIZ_ANSWERS_KEY, answers);
     },
+    // hábitos diários
     getDailyHabits () {
-        return baseGet(DAILY_HABITS_KEY) ?? [];
+        const stored = baseGet(DAILY_HABITS_KEY);
+        // se já tiver hábitos salvos, usa eles
+        if (stored && stored.length > 0) return stored;
+        // senão, usa padrão
+        return DEFAULT_DAILY_HABITS;
     },
     setDailyHabits (habits) {
         baseSet(DAILY_HABITS_KEY, habits);
     },
+    // stats
     getStats () {
-        return baseGet(STATS_KEY);
+        return baseGet(STATS_KEY) ?? {
+            minutesFocused: 0,
+            sessionsCompleted: 0,
+            daysStreak: 0
+        };
     },
     setStats (stats) {
         baseSet(STATS_KEY, stats);

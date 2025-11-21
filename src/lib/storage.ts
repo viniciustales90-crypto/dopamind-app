@@ -8,8 +8,25 @@ const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
 const LAST_RESET_KEY = 'dopamind-last-reset-date';
+const DEFAULT_DAILY_HABITS: DailyHabit[] = [
+  {
+    id: 'habit-1',
+    title: 'Ficar 10 minutos sem redes sociais',
+    completed: false,
+  },
+  {
+    id: 'habit-2',
+    title: 'Bloquear notificações durante o foco',
+    completed: false,
+  },
+  {
+    id: 'habit-3',
+    title: 'Começar o dia 15 min longe do celular',
+    completed: false,
+  },
+];
 
-// ----------------- helpers base -----------------
+
 
 function baseGet<T = unknown>(key: string): T | null {
   if (typeof window === 'undefined') return null;
@@ -69,8 +86,13 @@ export const storage = {
 
   // hábitos diários
   getDailyHabits(): DailyHabit[] {
-    return baseGet<DailyHabit[]>(DAILY_HABITS_KEY) ?? [];
-  },
+  const stored = baseGet<DailyHabit[]>(DAILY_HABITS_KEY);
+  // se já tiver hábitos salvos, usa eles
+  if (stored && stored.length > 0) return stored;
+  // senão, usa padrão
+  return DEFAULT_DAILY_HABITS;
+},
+
 
   setDailyHabits(habits: DailyHabit[]) {
     baseSet(DAILY_HABITS_KEY, habits);
