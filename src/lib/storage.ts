@@ -1,15 +1,12 @@
-// src/lib/storage.ts
-
 import type { DailyHabit, Stats, UserProfile, QuizAnswers } from './types';
 
-// chaves usadas no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
+const LAST_RESET_KEY = 'dopamind-last-reset-date';
 
-// ---------- helpers base genéricos ----------
-
+// helpers base
 function baseGet<T = unknown>(key: string): T | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -40,15 +37,12 @@ function baseRemove(key: string) {
   }
 }
 
-// ---------- objeto storage usado no app inteiro ----------
-
+// objeto usado no app todo
 export const storage = {
-  // genéricos
   get: baseGet,
   set: baseSet,
   remove: baseRemove,
 
-  // helpers antigos (pra não quebrar nada do template)
   getUserProfile(): UserProfile | null {
     return baseGet<UserProfile>(USER_PROFILE_KEY);
   },
@@ -82,8 +76,7 @@ export const storage = {
   },
 };
 
-// ---------- cálculo de progresso diário ----------
-
+// progresso diário
 export function calculateDailyProgress(habits: DailyHabit[]): number {
   if (!habits || habits.length === 0) return 0;
 
@@ -96,4 +89,30 @@ export function calculateDailyProgress(habits: DailyHabit[]): number {
   }).length;
 
   return Math.round((completed / habits.length) * 100);
+}
+
+// ⬇ AQUI É O QUE O MainApp ESTÁ IMPORTANDO ⬇
+export function checkAndResetDailyHabits(): DailyHabit[] {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const lastReset = baseGet<string>(LAST_RESET_KEY);
+
+  let habits = storage.getDailyHabits();
+
+  if (!lastReset || lastReset !== today) {
+    habits = habits.map((h) => ({
+      ...h,
+      completed: false,
+      done: false,
+      isCompleted: false,
+    }));
+
+    storage.setDailyHabits(habits);
+    baseSet(LAST_RESET_KEY, today);
+  }
+
+  return habits;
 }
