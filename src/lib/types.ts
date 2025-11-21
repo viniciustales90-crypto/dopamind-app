@@ -1,6 +1,5 @@
 // src/lib/types.ts
 
-// Tipos genéricos do app antigo (bem flexíveis pra não dar erro)
 export type DailyHabit = {
   id?: string;
   title?: string;
@@ -9,6 +8,9 @@ export type DailyHabit = {
 };
 
 export type Stats = {
+  minutesFocused: number;
+  sessionsCompleted: number;
+  daysStreak: number;
   [key: string]: any;
 };
 
@@ -17,7 +19,7 @@ export type UserProfile = {
   [key: string]: any;
 };
 
-// Tipo do quiz DopaMind
+// (o QuizAnswers continua igual)
 export interface QuizAnswers {
   userName: string;
   ageRange: 'menos-18' | '18-24' | '25-34' | '35-44' | '45-54' | '55+';

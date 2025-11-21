@@ -91,17 +91,17 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 
 var { k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
-// src/lib/storage.ts
 __turbopack_context__.s({
     "calculateDailyProgress": ()=>calculateDailyProgress,
+    "checkAndResetDailyHabits": ()=>checkAndResetDailyHabits,
     "storage": ()=>storage
 });
-// chaves usadas no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
-// ---------- helpers base genéricos ----------
+const LAST_RESET_KEY = 'dopamind-last-reset-date';
+// helpers base
 function baseGet(key) {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
@@ -133,11 +133,9 @@ function baseRemove(key) {
     }
 }
 const storage = {
-    // genéricos
     get: baseGet,
     set: baseSet,
     remove: baseRemove,
-    // helpers antigos (pra não quebrar nada do template)
     getUserProfile () {
         return baseGet(USER_PROFILE_KEY);
     },
@@ -174,6 +172,24 @@ function calculateDailyProgress(habits) {
         return false;
     }).length;
     return Math.round(completed / habits.length * 100);
+}
+function checkAndResetDailyHabits() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const lastReset = baseGet(LAST_RESET_KEY);
+    let habits = storage.getDailyHabits();
+    if (!lastReset || lastReset !== today) {
+        habits = habits.map((h)=>({
+                ...h,
+                completed: false,
+                done: false,
+                isCompleted: false
+            }));
+        storage.setDailyHabits(habits);
+        baseSet(LAST_RESET_KEY, today);
+    }
+    return habits;
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);

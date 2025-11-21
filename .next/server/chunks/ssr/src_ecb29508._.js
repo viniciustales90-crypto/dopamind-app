@@ -72,17 +72,17 @@ function Button({ className, variant, size, asChild = false, ...props }) {
 "[project]/src/lib/storage.ts [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
-// src/lib/storage.ts
 __turbopack_context__.s({
     "calculateDailyProgress": ()=>calculateDailyProgress,
+    "checkAndResetDailyHabits": ()=>checkAndResetDailyHabits,
     "storage": ()=>storage
 });
-// chaves usadas no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
-// ---------- helpers base genéricos ----------
+const LAST_RESET_KEY = 'dopamind-last-reset-date';
+// helpers base
 function baseGet(key) {
     if ("TURBOPACK compile-time truthy", 1) return null;
     //TURBOPACK unreachable
@@ -99,11 +99,9 @@ function baseRemove(key) {
     ;
 }
 const storage = {
-    // genéricos
     get: baseGet,
     set: baseSet,
     remove: baseRemove,
-    // helpers antigos (pra não quebrar nada do template)
     getUserProfile () {
         return baseGet(USER_PROFILE_KEY);
     },
@@ -139,6 +137,16 @@ function calculateDailyProgress(habits) {
         return false;
     }).length;
     return Math.round(completed / habits.length * 100);
+}
+function checkAndResetDailyHabits() {
+    if ("TURBOPACK compile-time truthy", 1) {
+        return [];
+    }
+    //TURBOPACK unreachable
+    ;
+    const today = undefined; // "YYYY-MM-DD"
+    const lastReset = undefined;
+    let habits;
 }
 }),
 "[project]/src/components/quiz/QuizFlow.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {

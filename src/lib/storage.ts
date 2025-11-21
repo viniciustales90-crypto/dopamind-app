@@ -1,12 +1,16 @@
+// src/lib/storage.ts
+
 import type { DailyHabit, Stats, UserProfile, QuizAnswers } from './types';
 
+// chaves no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
 const STATS_KEY = 'dopamind-stats';
 const LAST_RESET_KEY = 'dopamind-last-reset-date';
 
-// helpers base
+// ----------------- helpers base -----------------
+
 function baseGet<T = unknown>(key: string): T | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -37,12 +41,15 @@ function baseRemove(key: string) {
   }
 }
 
-// objeto usado no app todo
+// ----------------- objeto storage -----------------
+
 export const storage = {
+  // genéricos (usados no quiz / result)
   get: baseGet,
   set: baseSet,
   remove: baseRemove,
 
+  // perfil
   getUserProfile(): UserProfile | null {
     return baseGet<UserProfile>(USER_PROFILE_KEY);
   },
@@ -51,6 +58,7 @@ export const storage = {
     baseSet(USER_PROFILE_KEY, profile);
   },
 
+  // quiz dopamind
   getQuizAnswers(): QuizAnswers | null {
     return baseGet<QuizAnswers>(QUIZ_ANSWERS_KEY);
   },
@@ -59,6 +67,7 @@ export const storage = {
     baseSet(QUIZ_ANSWERS_KEY, answers);
   },
 
+  // hábitos diários
   getDailyHabits(): DailyHabit[] {
     return baseGet<DailyHabit[]>(DAILY_HABITS_KEY) ?? [];
   },
@@ -67,8 +76,15 @@ export const storage = {
     baseSet(DAILY_HABITS_KEY, habits);
   },
 
-  getStats(): Stats | null {
-    return baseGet<Stats>(STATS_KEY);
+  // stats
+  getStats(): Stats {
+    return (
+      baseGet<Stats>(STATS_KEY) ?? {
+        minutesFocused: 0,
+        sessionsCompleted: 0,
+        daysStreak: 0,
+      }
+    );
   },
 
   setStats(stats: Stats) {
@@ -76,11 +92,12 @@ export const storage = {
   },
 };
 
-// progresso diário
+// ----------------- progresso diário -----------------
+
 export function calculateDailyProgress(habits: DailyHabit[]): number {
   if (!habits || habits.length === 0) return 0;
 
-  const completed = habits.filter((h: any) => {
+  const completed = habits.filter((h: DailyHabit) => {
     if (!h) return false;
     if (typeof h.completed === 'boolean') return h.completed;
     if (typeof h.done === 'boolean') return h.done;
@@ -91,7 +108,8 @@ export function calculateDailyProgress(habits: DailyHabit[]): number {
   return Math.round((completed / habits.length) * 100);
 }
 
-// ⬇ AQUI É O QUE O MainApp ESTÁ IMPORTANDO ⬇
+// ----------------- reset diário dos hábitos -----------------
+
 export function checkAndResetDailyHabits(): DailyHabit[] {
   if (typeof window === 'undefined') {
     return [];
@@ -102,8 +120,9 @@ export function checkAndResetDailyHabits(): DailyHabit[] {
 
   let habits = storage.getDailyHabits();
 
+  // se nunca resetou ou o dia mudou, zera os "completed"
   if (!lastReset || lastReset !== today) {
-    habits = habits.map((h) => ({
+    habits = habits.map((h: DailyHabit) => ({
       ...h,
       completed: false,
       done: false,
