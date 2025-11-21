@@ -78,7 +78,6 @@ __turbopack_context__.s({
     "checkAndResetDailyHabits": ()=>checkAndResetDailyHabits,
     "storage": ()=>storage
 });
-// chaves no localStorage
 const USER_PROFILE_KEY = 'dopamind-user-profile';
 const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
 const DAILY_HABITS_KEY = 'dopamind-daily-habits';
@@ -88,16 +87,25 @@ const DEFAULT_DAILY_HABITS = [
     {
         id: 'habit-1',
         title: 'Ficar 10 minutos sem redes sociais',
+        name: 'Ficar 10 minutos sem redes sociais',
         completed: false
     },
     {
         id: 'habit-2',
         title: 'Bloquear notificações durante o foco',
+        name: 'Bloquear notificações durante o foco',
         completed: false
     },
     {
         id: 'habit-3',
-        title: 'Começar o dia 15 min longe do celular',
+        title: 'Beber 500ml de água',
+        name: 'Beber 500ml de água',
+        completed: false
+    },
+    {
+        id: 'habit-4',
+        title: 'Ler 5 páginas de um livro',
+        name: 'Ler 5 páginas de um livro',
         completed: false
     }
 ];
@@ -138,9 +146,7 @@ const storage = {
     // hábitos diários
     getDailyHabits () {
         const stored = baseGet(DAILY_HABITS_KEY);
-        // se já tiver hábitos salvos, usa eles
         if (stored && stored.length > 0) return stored;
-        // senão, usa padrão
         return DEFAULT_DAILY_HABITS;
     },
     setDailyHabits (habits) {
