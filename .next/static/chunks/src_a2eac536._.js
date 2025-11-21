@@ -91,43 +91,90 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 
 var { k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
-// lib/storage.ts
-// wrapper simples pro localStorage, protegido pra SSR
+// src/lib/storage.ts
 __turbopack_context__.s({
+    "calculateDailyProgress": ()=>calculateDailyProgress,
     "storage": ()=>storage
 });
+// chaves usadas no localStorage
+const USER_PROFILE_KEY = 'dopamind-user-profile';
+const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
+const DAILY_HABITS_KEY = 'dopamind-daily-habits';
+const STATS_KEY = 'dopamind-stats';
+// ---------- helpers base genéricos ----------
+function baseGet(key) {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    try {
+        const raw = window.localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch (error) {
+        console.error('storage.get error', error);
+        return null;
+    }
+}
+function baseSet(key, value) {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        console.error('storage.set error', error);
+    }
+}
+function baseRemove(key) {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    try {
+        window.localStorage.removeItem(key);
+    } catch (error) {
+        console.error('storage.remove error', error);
+    }
+}
 const storage = {
-    get (key) {
-        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-        ;
-        try {
-            const raw = window.localStorage.getItem(key);
-            if (!raw) return null;
-            return JSON.parse(raw);
-        } catch (err) {
-            console.error('storage.get error', err);
-            return null;
-        }
+    // genéricos
+    get: baseGet,
+    set: baseSet,
+    remove: baseRemove,
+    // helpers antigos (pra não quebrar nada do template)
+    getUserProfile () {
+        return baseGet(USER_PROFILE_KEY);
     },
-    set (key, value) {
-        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-        ;
-        try {
-            window.localStorage.setItem(key, JSON.stringify(value));
-        } catch (err) {
-            console.error('storage.set error', err);
-        }
+    setUserProfile (profile) {
+        baseSet(USER_PROFILE_KEY, profile);
     },
-    remove (key) {
-        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-        ;
-        try {
-            window.localStorage.removeItem(key);
-        } catch (err) {
-            console.error('storage.remove error', err);
-        }
+    getQuizAnswers () {
+        return baseGet(QUIZ_ANSWERS_KEY);
+    },
+    setQuizAnswers (answers) {
+        baseSet(QUIZ_ANSWERS_KEY, answers);
+    },
+    getDailyHabits () {
+        var _baseGet;
+        return (_baseGet = baseGet(DAILY_HABITS_KEY)) !== null && _baseGet !== void 0 ? _baseGet : [];
+    },
+    setDailyHabits (habits) {
+        baseSet(DAILY_HABITS_KEY, habits);
+    },
+    getStats () {
+        return baseGet(STATS_KEY);
+    },
+    setStats (stats) {
+        baseSet(STATS_KEY, stats);
     }
 };
+function calculateDailyProgress(habits) {
+    if (!habits || habits.length === 0) return 0;
+    const completed = habits.filter((h)=>{
+        if (!h) return false;
+        if (typeof h.completed === 'boolean') return h.completed;
+        if (typeof h.done === 'boolean') return h.done;
+        if (typeof h.isCompleted === 'boolean') return h.isCompleted;
+        return false;
+    }).length;
+    return Math.round(completed / habits.length * 100);
+}
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }

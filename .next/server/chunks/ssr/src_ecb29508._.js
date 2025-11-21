@@ -72,28 +72,74 @@ function Button({ className, variant, size, asChild = false, ...props }) {
 "[project]/src/lib/storage.ts [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
-// lib/storage.ts
-// wrapper simples pro localStorage, protegido pra SSR
+// src/lib/storage.ts
 __turbopack_context__.s({
+    "calculateDailyProgress": ()=>calculateDailyProgress,
     "storage": ()=>storage
 });
+// chaves usadas no localStorage
+const USER_PROFILE_KEY = 'dopamind-user-profile';
+const QUIZ_ANSWERS_KEY = 'dopamind-quiz';
+const DAILY_HABITS_KEY = 'dopamind-daily-habits';
+const STATS_KEY = 'dopamind-stats';
+// ---------- helpers base genéricos ----------
+function baseGet(key) {
+    if ("TURBOPACK compile-time truthy", 1) return null;
+    //TURBOPACK unreachable
+    ;
+}
+function baseSet(key, value) {
+    if ("TURBOPACK compile-time truthy", 1) return;
+    //TURBOPACK unreachable
+    ;
+}
+function baseRemove(key) {
+    if ("TURBOPACK compile-time truthy", 1) return;
+    //TURBOPACK unreachable
+    ;
+}
 const storage = {
-    get (key) {
-        if ("TURBOPACK compile-time truthy", 1) return null;
-        //TURBOPACK unreachable
-        ;
+    // genéricos
+    get: baseGet,
+    set: baseSet,
+    remove: baseRemove,
+    // helpers antigos (pra não quebrar nada do template)
+    getUserProfile () {
+        return baseGet(USER_PROFILE_KEY);
     },
-    set (key, value) {
-        if ("TURBOPACK compile-time truthy", 1) return;
-        //TURBOPACK unreachable
-        ;
+    setUserProfile (profile) {
+        baseSet(USER_PROFILE_KEY, profile);
     },
-    remove (key) {
-        if ("TURBOPACK compile-time truthy", 1) return;
-        //TURBOPACK unreachable
-        ;
+    getQuizAnswers () {
+        return baseGet(QUIZ_ANSWERS_KEY);
+    },
+    setQuizAnswers (answers) {
+        baseSet(QUIZ_ANSWERS_KEY, answers);
+    },
+    getDailyHabits () {
+        return baseGet(DAILY_HABITS_KEY) ?? [];
+    },
+    setDailyHabits (habits) {
+        baseSet(DAILY_HABITS_KEY, habits);
+    },
+    getStats () {
+        return baseGet(STATS_KEY);
+    },
+    setStats (stats) {
+        baseSet(STATS_KEY, stats);
     }
 };
+function calculateDailyProgress(habits) {
+    if (!habits || habits.length === 0) return 0;
+    const completed = habits.filter((h)=>{
+        if (!h) return false;
+        if (typeof h.completed === 'boolean') return h.completed;
+        if (typeof h.done === 'boolean') return h.done;
+        if (typeof h.isCompleted === 'boolean') return h.isCompleted;
+        return false;
+    }).length;
+    return Math.round(completed / habits.length * 100);
+}
 }),
 "[project]/src/components/quiz/QuizFlow.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
