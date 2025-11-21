@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { storage } from '@/lib/storage';
 import type { QuizAnswers } from '@/lib/types';
+
+type PlanId = 'annual' | 'monthly' | 'lifetime';
 
 interface ResultData {
   focusIssue: string;
@@ -11,15 +14,92 @@ interface ResultData {
 }
 
 function mapQuizToResult(quiz: QuizAnswers): ResultData {
-  let focusIssue = 'ansiedade';
-  let stateLabel = 'estressado';
-  let impulseLabel = 'redes-repeticao';
+  // ==========================
+  // 1) Foco comprometido
+  // ==========================
+  let focusIssue = 'oscilações de foco';
 
-  // depois você pode usar quiz.phoneFreeTime, quiz.mainGoal, etc. pra personalizar
+  if (quiz.focusDifficulty === 'nao') {
+    focusIssue = 'distrações pontuais';
+  } else if (quiz.focusDifficulty === 'as-vezes') {
+    focusIssue = 'dificuldade moderada de foco';
+  } else if (quiz.focusDifficulty === 'quase-sempre') {
+    focusIssue = 'ansiedade e dificuldade intensa de foco';
+  }
+
+  // refina pelo objetivo principal
+  switch (quiz.mainGoal) {
+    case 'produtividade':
+      focusIssue = 'queda de produtividade por falta de foco';
+      break;
+    case 'menos-celular':
+      focusIssue = 'excesso de estímulos no celular';
+      break;
+    case 'parar-procrastinar':
+      focusIssue = 'procrastinação ligada à dopamina';
+      break;
+    case 'melhorar-sono':
+      focusIssue = 'alterações no sono ligadas à dopamina';
+      break;
+    case 'controle-impulsos':
+      focusIssue = 'impulsos digitais fora de controle';
+      break;
+    // "outro" mantém o que já veio
+  }
+
+  // ==========================
+  // 2) Estado geral (estresse / sobrecarga)
+  // ==========================
+  let stateLabel = 'estresse moderado';
+
+  switch (quiz.phoneFreeTime) {
+    case 'menos-30':
+    case '30-60':
+      stateLabel = 'estresse elevado';
+      break;
+    case '1-3h':
+      stateLabel = 'sobrecarga mental';
+      break;
+    case '3-5h':
+      stateLabel = 'em processo de ajuste';
+      break;
+    case '5h+':
+      stateLabel = 'equilíbrio em construção';
+      break;
+  }
+
+  // ==========================
+  // 3) Impulso dominante
+  // ==========================
+  const impulses = quiz.impulseCycles || [];
+  const first = impulses[0];
+
+  let impulseLabel = 'redes-repetição';
+
+  switch (first) {
+    case 'scroll-infinito':
+      impulseLabel = 'scroll infinito em redes sociais';
+      break;
+    case 'videos-curtos':
+      impulseLabel = 'vídeos curtos em excesso';
+      break;
+    case 'procrastinacao':
+      impulseLabel = 'procrastinação recorrente';
+      break;
+    case 'games-excesso':
+      impulseLabel = 'jogos eletrônicos em excesso';
+      break;
+    case 'outros-impulsos':
+      impulseLabel = 'impulsos digitais variados';
+      break;
+    // se não tiver nada, mantém "redes-repetição"
+  }
+
   return { focusIssue, stateLabel, impulseLabel };
 }
 
 export default function ResultPage() {
+  const router = useRouter();
   const [quiz, setQuiz] = useState<QuizAnswers | null>(null);
   const [result, setResult] = useState<ResultData | null>(null);
 
@@ -32,6 +112,12 @@ export default function ResultPage() {
   }, []);
 
   const name = (quiz?.userName || 'Seu').toUpperCase();
+
+  function handleChoosePlan(plan: PlanId) {
+    // guarda plano escolhido para usar no checkout
+    storage.set('dopamind-plan', plan);
+    router.push('/checkout');
+  }
 
   return (
     <div className="min-h-screen w-full bg-white">
@@ -49,7 +135,7 @@ export default function ResultPage() {
             </span>{' '}
             associados a{' '}
             <span className="font-semibold text-neutral-900">
-              {result?.focusIssue || 'ansiedade'}
+              {result?.focusIssue || 'oscilações de foco'}
             </span>{' '}
             e impulsos como{' '}
             <span className="font-semibold text-neutral-900">
@@ -65,14 +151,14 @@ export default function ResultPage() {
           <div className="mx-auto w-full max-w-lg rounded-full bg-neutral-50 px-4 py-3 text-center text-sm text-neutral-700">
             Seu foco atual está comprometido por:{' '}
             <span className="font-semibold text-neutral-900">
-              {result?.focusIssue || 'ansiedade'}
+              {result?.focusIssue || 'oscilações de foco'}
             </span>
           </div>
 
           <div className="mx-auto w-full max-w-lg rounded-full bg-neutral-50 px-4 py-3 text-center text-sm text-neutral-700">
             Você apresenta sinais de:{' '}
             <span className="font-semibold text-neutral-900">
-              {result?.stateLabel || 'estressado'}
+              {result?.stateLabel || 'estresse moderado'}
             </span>
           </div>
 
@@ -94,6 +180,7 @@ export default function ResultPage() {
             {/* Plano Anual (destaque) */}
             <button
               type="button"
+              onClick={() => handleChoosePlan('annual')}
               className="flex w-full items-center justify-between rounded-2xl border border-blue-500 bg-blue-50 px-4 py-3 text-left shadow-sm transition hover:bg-blue-100"
             >
               <div>
@@ -112,6 +199,7 @@ export default function ResultPage() {
             {/* Plano Mensal */}
             <button
               type="button"
+              onClick={() => handleChoosePlan('monthly')}
               className="flex w-full items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-neutral-400"
             >
               <div>
@@ -130,6 +218,7 @@ export default function ResultPage() {
             {/* Vitalício */}
             <button
               type="button"
+              onClick={() => handleChoosePlan('lifetime')}
               className="flex w-full items-center justify-between rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left shadow-sm transition hover:border-neutral-400"
             >
               <div>
