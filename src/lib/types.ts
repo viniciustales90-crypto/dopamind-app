@@ -3,9 +3,12 @@
 export type DailyHabit = {
   id?: string;
   title?: string;
+  name?: string;
+  label?: string;
   completed?: boolean;
   [key: string]: any;
 };
+
 
 export type Stats = {
   minutesFocused: number;

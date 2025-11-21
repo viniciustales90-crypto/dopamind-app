@@ -117,8 +117,8 @@ const DEFAULT_DAILY_HABITS = [
     },
     {
         id: 'habit-3',
-        title: 'Beber 500ml de água',
-        name: 'Beber 500ml de água',
+        title: 'Assim que acorda, Beber 500ml de água',
+        name: 'Assim que acorda, Beber 500ml de água',
         completed: false
     },
     {
